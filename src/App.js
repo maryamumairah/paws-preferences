@@ -318,8 +318,9 @@ export default function App() {
                   fontSize: 16,
                   borderRadius: 8,
                   border: "none",
-                  backgroundColor: "#FDFFB6",
+                  backgroundColor: "#DEDAF4",
                   color: "#000",
+                  fontWeight: 600,
                   cursor: "pointer",
                 }}
               >
