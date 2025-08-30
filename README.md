@@ -1,4 +1,3 @@
-
 # Paws & Preferences: Find Your Favourite Kitty
 
 > **Note:** This project is part of the Netizen Experience Assessment.
