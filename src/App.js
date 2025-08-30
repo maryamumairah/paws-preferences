@@ -1,50 +1,103 @@
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 
 const swipeConfidenceThreshold = 100;
 
-const Card = ({ imgUrl, onSwipe, interactive, style }) => (
-  <motion.div
-    drag={interactive ? "x" : false}
-    dragConstraints={{ left: 0, right: 0 }}
-    dragElastic={0.8}
-    onDragEnd={(e, info) => {
-      if (info.offset.x > swipeConfidenceThreshold) {
-        onSwipe("like");
-      } else if (info.offset.x < -swipeConfidenceThreshold) {
-        onSwipe("dislike");
-      }
-    }}
-    style={{
-      width: "100%",
-      height: "100%",
-      borderRadius: 16,
-      background: "#fff",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      fontSize: 28,
-      // boxShadow removed
-      userSelect: "none",
-      overflow: "hidden",
-      cursor: interactive ? "grab" : "default",
-      ...style,
-    }}
-  >
-    <img
-      src={imgUrl}
-      alt="cat"
-      draggable={false}
+const Card = ({ imgUrl, onSwipe, interactive, style }) => {
+  const [loading, setLoading] = React.useState(true);
+  return (
+    <motion.div
+      drag={interactive ? "x" : false}
+      dragConstraints={{ left: 0, right: 0 }}
+      dragElastic={0.8}
+      onDragEnd={(e, info) => {
+        if (info.offset.x > swipeConfidenceThreshold) {
+          onSwipe("like");
+        } else if (info.offset.x < -swipeConfidenceThreshold) {
+          onSwipe("dislike");
+        }
+      }}
       style={{
         width: "100%",
         height: "100%",
-        objectFit: "cover",
+        borderRadius: 16,
+        background: "#fff",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: 28,
+        // boxShadow removed
         userSelect: "none",
-        pointerEvents: "none",
+        overflow: "hidden",
+        cursor: interactive ? "grab" : "default",
+        position: "relative",
+        ...style,
       }}
-    />
-  </motion.div>
-);
+    >
+      {loading && (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "rgba(255,255,255,0.7)",
+            zIndex: 2,
+          }}
+        >
+          <img
+            src={process.env.PUBLIC_URL + "/cat-spinner2.gif"}
+            alt="Loading cat"
+            style={{
+              width: 100,
+              height: 100,
+              animation: "spin 1s linear infinite",
+            }}
+          />
+          <span
+            style={{
+              marginTop: 20,
+              fontFamily: "Poppins, sans-serif",
+              fontSize: 20,
+              color: "#000",
+              letterSpacing: 1,
+            }}
+          >
+            Loading...
+          </span>
+          <style>{`
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          `}</style>
+        </div>
+      )}
+      <img
+        src={imgUrl}
+        alt="cat"
+        draggable={false}
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          userSelect: "none",
+          pointerEvents: "none",
+          opacity: loading ? 0 : 1,
+          transition: "opacity 0.3s",
+        }}
+        onLoad={() => setLoading(false)}
+      />
+      {/* Spinner animation keyframes (not needed for GIF) */}
+    </motion.div>
+  );
+};
 
 export default function App() {
   const initialCards = [
@@ -58,12 +111,18 @@ export default function App() {
     "https://cataas.com/cat?8",
     "https://cataas.com/cat?9",
     "https://cataas.com/cat?10",
+    "https://cataas.com/cat?11",
+    "https://cataas.com/cat?12",
+    "https://cataas.com/cat?13",
+    "https://cataas.com/cat?14",
+    "https://cataas.com/cat?15",
   ];
 
   const [cards, setCards] = useState(initialCards);
   const [liked, setLiked] = useState([]);
   const [disliked, setDisliked] = useState([]);
   const [round, setRound] = useState(1);
+  const [showMain, setShowMain] = useState(true);
 
   const handleSwipe = (direction, index) => {
     const swipedCat = cards[index];
@@ -75,11 +134,83 @@ export default function App() {
   const handleSwipeAgain = () => {
     const newRound = round + 1;
     setRound(newRound);
-  const newCards = Array.from({ length: 10 }, (_, i) => `https://cataas.com/cat?${newRound}-${i + 1}`);
+    const newCards = Array.from({ length: 15 }, (_, i) => `https://cataas.com/cat?${newRound}-${i + 1}`);
     setCards(newCards);
     setLiked([]);
     setDisliked([]);
   };
+
+  if (showMain) {
+    return (
+      <div
+        style={{
+          width: "100%",
+          maxWidth: 340,
+          minHeight: "100vh",
+          margin: "0 auto",
+          padding: "24px 8px 0 8px",
+          boxSizing: "border-box",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "#fff",
+        }}
+      >
+        <div
+          style={{
+            width: "100%",
+            height: 480,
+            borderRadius: 16,
+            background: "#DEDAF4",
+            boxShadow: "0 4px 24px rgba(0,0,0,0.10)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 32,
+          }}
+        >
+          {/* Google Fonts import for Poppins */}
+          <link
+            href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap"
+            rel="stylesheet"
+          />
+          <h2
+            style={{
+              fontFamily: "Poppins, sans-serif",
+              fontSize: 26,
+              color: "#7C5E99",
+              marginBottom: 10,
+              textAlign: "center",
+              fontWeight: 700,
+              letterSpacing: 1,
+            }}
+          >
+            Paws & Preferences: Find Your Favourite Kitty 🐱
+          </h2>
+          <br></br>
+          <button
+            onClick={() => setShowMain(false)}
+            style={{
+              padding: "14px 32px",
+              fontSize: 18,
+              borderRadius: 12,
+              border: "none",
+              backgroundColor: "#FDFFB6",
+              color: "#000",
+              cursor: "pointer",
+              fontWeight: 600,
+              boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
+              transition: "background 0.2s",
+            }}
+          >
+            Start Swiping
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -118,75 +249,85 @@ export default function App() {
                   height: "100%",
                 }}
               >
-                <Card imgUrl={url} onSwipe={(dir) => handleSwipe(dir, index)} interactive={isTop} style={peekStyle} />
+                <Card
+                  imgUrl={url}
+                  onSwipe={(dir) => handleSwipe(dir, index)}
+                  interactive={isTop}
+                  style={peekStyle}
+                />
               </div>
             );
           })
         ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+          <div
             style={{
               width: "100%",
-              height: "100%",
-              borderRadius: 16,
-              background: "#f9f9f9",
+              minHeight: "100vh",
               display: "flex",
-              flexDirection: "column",
               alignItems: "center",
-              justifyContent: "flex-start",
-              padding: 16,
-              // boxShadow removed
-              overflowY: "auto",
-              maxHeight: 480,
-              scrollbarWidth: "none", // Firefox
-              msOverflowStyle: "none", // IE 10+
+              justifyContent: "center",
             }}
-            className="hide-scrollbar"
           >
-            <h2 style={{ marginBottom: 12 }}>Summary 🐾</h2>
-            {/* <div style={{ fontSize: 18, fontWeight: 600, color: '#4CAF50', marginBottom: 8 }}>
-              Cats you like: {liked.length}
-            </div> */}
-            <p style={{ fontSize: 18, marginBottom: 16 }}>
-              You liked <strong>{liked.length}</strong> furball{liked.length !== 1 ? "s" : ""}.
-            </p>
-
-            {/* <h3 style={{ marginTop: 16, marginBottom: 8 }}>👍 Liked {liked.length} furballs</h3> */}
-            <div
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
-                gap: 10,
                 width: "100%",
+                maxWidth: 340,
+                borderRadius: 16,
+                background: "#fff",
+                boxShadow: "0 4px 24px rgba(0,0,0,0.10)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 32,
               }}
             >
-              {liked.map((cat, i) => (
-                <img
-                  key={i}
-                  src={cat}
-                  alt={`liked-cat-${i}`}
-                  style={{ width: "100%", height: 100, objectFit: "cover", borderRadius: 12 }}
-                />
-              ))}
-            </div>
-
-            <button
-              onClick={handleSwipeAgain}
-              style={{
-                marginTop: 20,
-                padding: "10px 20px",
-                fontSize: 16,
-                borderRadius: 8,
-                border: "none",
-                backgroundColor: "#4CAF50",
-                color: "#fff",
-                cursor: "pointer",
-              }}
-            >
-              Swipe Again
-            </button>
-          </motion.div>
+              <h2 style={{ marginBottom: 12 }}>Summary 🐾</h2>
+              <p style={{ fontSize: 18, marginBottom: 16 }}>
+                You liked <strong>{liked.length}</strong> furball{liked.length !== 1 ? "s" : ""}.
+              </p>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
+                  gap: 10,
+                  width: "100%",
+                  marginBottom: 16,
+                }}
+              >
+                {liked.map((cat, i) => (
+                  <img
+                    key={i}
+                    src={cat}
+                    alt={`liked-cat-${i}`}
+                    style={{
+                      width: "100%",
+                      height: 100,
+                      objectFit: "cover",
+                      borderRadius: 12,
+                    }}
+                  />
+                ))}
+              </div>
+              <button
+                onClick={handleSwipeAgain}
+                style={{
+                  marginTop: 8,
+                  padding: "10px 20px",
+                  fontSize: 16,
+                  borderRadius: 8,
+                  border: "none",
+                  backgroundColor: "#4CAF50",
+                  color: "#fff",
+                  cursor: "pointer",
+                }}
+              >
+                Swipe Again
+              </button>
+            </motion.div>
+          </div>
         )}
       </div>
 
@@ -216,9 +357,9 @@ export default function App() {
               boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
               transition: "transform 0.1s",
             }}
-            onMouseDown={(e) => e.currentTarget.style.transform = "scale(0.9)"}
-            onMouseUp={(e) => e.currentTarget.style.transform = "scale(1)"}
-            onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
+            onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.9)")}
+            onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
           >
             <span style={{ color: "red", fontSize: 28 }}>❌</span>
           </button>
@@ -239,9 +380,9 @@ export default function App() {
               boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
               transition: "transform 0.1s",
             }}
-            onMouseDown={(e) => e.currentTarget.style.transform = "scale(0.9)"}
-            onMouseUp={(e) => e.currentTarget.style.transform = "scale(1)"}
-            onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
+            onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.9)")}
+            onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
           >
             <span style={{ color: "green", fontSize: 28 }}>❤️</span>
           </button>
