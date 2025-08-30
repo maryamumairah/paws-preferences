@@ -320,7 +320,7 @@ export default function App() {
                   borderRadius: 8,
                   border: "none",
                   backgroundColor: "#FDFFB6",
-                  color: "#fff",
+                  color: "#000",
                   cursor: "pointer",
                 }}
               >
